@@ -3,6 +3,10 @@ import { defineConfig } from 'vitepress'
 export default defineConfig({
   // ...
   title: 'WangxuFE',
+  head:[
+    ['meta', { name: 'robots', content: 'noindex,nofollow,noodp'}]
+  ],
+  description: '网旭前端',
   lastUpdated:true,
   themeConfig: {
     nav: [
