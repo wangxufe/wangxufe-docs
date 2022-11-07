@@ -2,12 +2,12 @@
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
 
-## 浏览器兼容性
+## ❌浏览器兼容性
 
 必须符合 `ES2015` 执行标准的浏览器
 
 如果**优雅降级**（即部分功能对低版本浏览器不可见）， 可宽限至 符合 `ES2017` 标准的浏览器；
-## astro文件
+## 📁astro文件
 
 astro文件是按照Astro框架自定义的语法书写的文件， 本质上是对 html进行服务端增强， 有如下特点：
 
@@ -135,9 +135,10 @@ Astro在 `src/pages/`路径下查找 `.astro`或 `.md`文件。每个页面都�
 | `pnpm deploy:test`| 测试环境部署 (只能在开发分支) |
 | `pnpm deploy:prod`| 生产环境部署（只能在master分支） |
 
-## 问答
+## ❓问答
 
 ### 1、astro文件允许使用服务端代码， 到底意味着什么？
+因为Astro文件即路由的特性， 可以由文件路径判断页面url， 进一步可以得出当前页面的语言参数； 因此可以如下实现，在所有语言的页面中使用该组件， 均能展示对应的代码并且无冗余。
 
 ```html
 ---
@@ -176,6 +177,7 @@ const lang = getLang()
 -->
 <style is:global>
     .fade-left-edge {
+      /* 这种方式能避免 原子类名过于重复 */
         @apply absolute top-0 left-0 w-[24%] h-[80%];
         background: linear-gradient(-90deg, rgba(245, 246, 255, 0%) 0%, #F5F6FF 100%);
     }
@@ -203,6 +205,8 @@ const lang = getLang()
 ```
 
 ### 2、在Astro框架中， 使用vue、svelte、react等代码有什么特点？
+
+所有的视图层代码都会经过 服务端构建（ssr）和客户端构建（client）， 因为vue、svelte、react这些视图层框架允许在服务端执行， 因此相关代码会存在两种执行环境， 在书写代码时必须考虑到这一点。而astro文件将服务端代码和客户端代码做了区分， 分别写在不同的位置。
 
 ## 👀 了解更多
 
