@@ -57,17 +57,21 @@ export default defineConfig({
               text: '前言',
               link: '/guide/start.md'
             },
+            // {
+            //   text: '入职礼包',
+            //   link: '/newbie/index.md'
+            // },
             {
-              text: '入职礼包',
-              link: '/newbie/index.md'
+              text: 'Astro',
+              link: '/astro/index.md'
+            },
+            {
+              text: '数据跟踪',
+              link: '/tracking/index.md'
             },
             {
               text: 'Electron',
               link: '/electron/mas.md'
-            },
-            {
-              text: 'Astro',
-              link: '/astro/index.md'
             },
             {
               text: '网旭文档',

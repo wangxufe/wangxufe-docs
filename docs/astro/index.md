@@ -23,7 +23,7 @@ astro文件是按照Astro框架自定义的语法书写的文件， 本质上是
 ```js
 import UploadIcon from '~icons/upload'
 // or
-import uploadIconSrc from '@icons/upload'
+import uploadIconSrc from '@icons/upload.svg'
 ```
 使用:
 ```html
@@ -50,7 +50,7 @@ import { Picture } from "@central/assets/imagetools";
 ```js
 import HeroImage from '~images/hero-image'
 // Or
-import heroImageSrc from '@images/hero-image'
+import heroImageSrc from '@images/hero-image.png'
 
 ```
 使用：
@@ -63,7 +63,7 @@ import heroImageSrc from '@images/hero-image'
 ### 3、路径即路由， 路由即语言
 目录 `src/pages/[lang]/[file]` 决定页面url `https://[domain]/[lang]/[file]`
 
-类似地，多语言目录结构为 `src/locales/[lang]`
+类似地，多语言翻译文件目录结构为 `src/locales/[lang]`
 
 ### 4、发布 (🚔 一般使用增量发布)
 采用 [fast-glob](https://github.com/mrmlnc/fast-glob) 匹配文件，实现文件增量发布, 请熟悉 `glob` 语法。
@@ -74,12 +74,12 @@ import heroImageSrc from '@images/hero-image'
 ```
 
 ### 5、国际化
-和运营使用飞书文档异步协作，研发通过飞书excel提供文案中文， 运营通过同一飞书excel提供多语言文案。
+和运营使用excel文档异步协作，研发通过excel提供文案中文， 运营通过excel提供多语言文案(目前picwish使用钉钉文档管理excel文件)。
 
-导出多语言到根目录下的`i18n.xlsx`文件：
+导出多语言到根目录下的`i18n.xlsx`文件, 支持局部导出：
 
 ```shell
-pnpm i18n export
+pnpm i18n export [file]
 ```
 
 从文件`i18n.xlsx`导入多语言
@@ -87,10 +87,12 @@ pnpm i18n export
 pnpm i18n import
 ```
 
+更多内容参考 [@central/i18n](http://npm.aoscdn.com/-/web/detail/@central/i18n)
+
 ### 6、整站思维
 
 将站点视为一个整体去思考，每个页面都是站点某一部分功能的入口， 多语言只是一种语言选择。
-页面与页面之间， 往往通过超链接跳转， 对每个页面赋予一个id， 通过id获取对应的页面url， 这样无论页面url怎么变化， 内部的跳转逻辑不会变化。
+页面与页面之间， 通过超链接连接， 对每个页面赋予一个id， 通过id获取对应的页面url， 这样无论页面url怎么变化， 内部的跳转逻辑不会变化。
 
 ### 7、样式
 样式采用原子类， 由unocss引擎驱动，由于unocss会以 单引号(') 分割字符串， 因此类名中不允许包含单引号， 这点与tailwind不同。unocss采用的规则与tailwind存在少量不同。
@@ -101,8 +103,6 @@ https://github.com/unocss/unocss/issues/1820
 
 https://github.com/unocss/unocss/pull/1741
 
-
-更多内容参考 [@central/i18n](http://npm.aoscdn.com/-/web/detail/@central/i18n)
 
 ## 🚀 项目结构
 
@@ -128,13 +128,9 @@ astro项目目录结构如下
 ```
 Astro在 `src/pages/`路径下查找 `.astro`或 `.md`文件。每个页面都会基于页面文件名称形成路由。
 
-图标放在 `src/assets/icons` 中， 图片放在 `src/assets/images`中, 不需要在文件夹中嵌套文件结构， 如 `src/assets/images/home/hero.jpg`, 保持扁平结构(`src/assets/home-hero.jpg`)即可。
-
-图标使用组件即可自动引用
+图标放在 `src/assets/icons` 中， 图片放在 `src/assets/images`中, 也可按命名空间在其中新建文件夹， 如 `src/assets/images/home/hero.jpg`。
 
 翻译放在 `src/locales/[lang].ts` 文件中, 会被 `@central/i18n` 处理。
-
-组件放在 `src/components` 中， 以组件为中心， 不需要按页面嵌套文件结构， 如果需要整个页面都是用`vue`组件， 命名应该是`IndexPageRoot`、`LoginPageRoot`
 
 ## 🧞 命令
 
@@ -186,10 +182,7 @@ const lang = getLang()
     </p>
 </div>
 
-<!-- 样式， 这里必须使用 is:global 指令, 将样式改为全局作用；
- 因为astro文件默认会对样式增加作用域， 但该功能存在兼容性问题（只能兼容到 ES2021）
--->
-<style is:global>
+<style>
     .fade-left-edge {
       /* 这种方式能避免 原子类名过于重复 */
         @apply absolute top-0 left-0 w-[24%] h-[80%];
@@ -222,6 +215,10 @@ const lang = getLang()
 
 所有的视图层代码都会经过 服务端构建（ssr）和客户端构建（client）， 因为vue、svelte、react这些视图层框架允许在服务端执行， 因此相关代码会存在两种执行环境， 在书写代码时必须考虑到这一点。而astro文件将服务端代码和客户端代码做了区分， 分别写在不同的位置。
 
+### 3、浏览器控制台报告 hydrate error ? 
+
+这是由于客户端代码和服务端代码不一致导致的， 由于服务端与浏览器环境的差异， 导致页面在不同段的初始状态会有差异。 当页面在浏览器中运行时， vue会尝试使用服务端状态激活， 当状态不一致时， 会报错hydrate error。解决方式是使两端初始状态统一， 如果客户端有不一样的初始化状态， 需要放入到下一次渲染(nextTick or onMounted)中处理.
+
 ## 👀 了解更多
 
 查看 [Astro 文档](https://docs.astro.build) 
@@ -239,4 +236,3 @@ const lang = getLang()
 ### i18n
 
 ### icons
-Copied
