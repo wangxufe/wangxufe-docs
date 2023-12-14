@@ -24,7 +24,7 @@
 
 中文支付， 通过创建订单接口， body传递 apptype 决定跟踪渠道；
 
-海外支付， 由 wx_inline_checkout.js 从 hawkeye.js 获取渠道数据， 传给后端。
+海外支付， 由 wx_inline_checkout.js 从 hawkeye.js 获取渠道数据， 传给后端。具体来说， 点击购买按钮， 页面会加载 paddle.js 脚本， 其中 https://buy.paddle.com/paddlejs 携带的参数 passthrough中的 apptype 值正确， 则前端跟踪参数传递正常
 
 ## GTM 配置跟踪元素
 
